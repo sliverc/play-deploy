@@ -1,0 +1,1 @@
+This is a deployment script for Play! applications. It is meant for deploying from a linux machine onto another linux machine and it makes a lot of assumptions about how things are setup. In the futur I may make it more flexible, for now it works for me.

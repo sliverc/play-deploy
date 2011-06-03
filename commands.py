@@ -103,7 +103,7 @@ class Server:
 
 	def copyDir(self, src, dest):
 		self.cmd('mkdir -p ' + dest)
-		subprocess.call('scp -i ' + self.getPkPath() + ' -qr ' + src + '/* ' + self.getRemoteUser() + '@' + self.server + ':' + dest, shell=True)
+		subprocess.call('scp -i ' + self.getPkPath() + ' -o StrictHostKeyChecking=no -qr ' + src + '/* ' + self.getRemoteUser() + '@' + self.server + ':' + dest, shell=True)
 
 	def getPkPath(self):
 		return self.conf('deploy.pk.path', '~/.ssh/id_rsa')
@@ -160,7 +160,7 @@ class Server:
 
 
 	def cmd(self,cmd):
-		cmd = 'ssh -i ' + self.getPkPath() + ' ' + self.getRemoteUser() + '@' + self.server + ' ' + cmd
+		cmd = 'ssh -i ' + self.getPkPath() + ' -o StrictHostKeyChecking=no ' + self.getRemoteUser() + '@' + self.server + ' ' + cmd
 		out = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout
 		if(not out == None):
 			return out.read().strip()

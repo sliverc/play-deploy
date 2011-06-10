@@ -40,7 +40,7 @@ class Server:
 		self.checkPlayInstall()
 		self.setFolderAndPorts()
 		if not self.usingHaProxy:
-			self.stop()
+			self.stopOld()
 		self.copyApp()
 		self.start()
 		if self.usingHaProxy:
@@ -141,7 +141,7 @@ class Server:
 		logFile = os.path.join(self.folder, 'logs', 'system.out')
 		contents = self.cmd('cat ' + logFile)
 		if contents.find('Exception') != -1 or timeWaiting > maxWaitTime:
-			self.stop()
+			playCmd('stop')
 			log('Error starting app on ' + self.server + '\nsysout contents:\n' + contents)
 			raise Exception('Start Error')
 		if contents.find('~ Listening for HTTP on port ') != -1:
@@ -149,7 +149,7 @@ class Server:
 		return False
 
 
-	def stop(self):
+	def stopOld(self):
 		log('stopping old app')
 		log(self.cmd(self.getPlayRemotePath() + ' stop ' + self.oldFolder))
 
@@ -177,5 +177,5 @@ class Server:
 		self.sudoCmd('sed -i "s/:' + str(self.oldPort) + '/:' + str(self.newPort) + '/g" /etc/haproxy/haproxy.cfg')
 		log(self.sudoCmd('service haproxy reload'))
 		time.sleep(10)
-		self.stop()
+		self.stopOld()
 

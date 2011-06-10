@@ -141,7 +141,7 @@ class Server:
 		logFile = os.path.join(self.folder, 'logs', 'system.out')
 		contents = self.cmd('cat ' + logFile)
 		if contents.find('Exception') != -1 or timeWaiting > maxWaitTime:
-			playCmd('stop')
+			self.playCmd('stop')
 			log('Error starting app on ' + self.server + '\nsysout contents:\n' + contents)
 			raise Exception('Start Error')
 		if contents.find('~ Listening for HTTP on port ') != -1:

@@ -86,7 +86,7 @@ class Server:
 			self.folder = folder1
 			self.oldFolder = folder2
 
-        def appOneIsRunning(self,folder):
+	def appOneIsRunning(self,folder):
 		path = os.path.join(folder, 'server.pid')
 		if not self.exists(path):
 			return False
@@ -103,10 +103,7 @@ class Server:
 
 	def copyDir(self, src, dest):
 		self.cmd('mkdir -p ' + dest)
-		subprocess.call('scp -i ' + self.getPkPath() + ' -o StrictHostKeyChecking=no -qr ' + src + '/* ' + self.getRemoteUser() + '@' + self.server + ':' + dest, shell=True)
-
-	def getPkPath(self):
-		return self.conf('deploy.pk.path', '~/.ssh/id_rsa')
+		subprocess.call('scp -qr ' + src + '/* ' + self.getRemoteUser() + '@' + self.server + ':' + dest, shell=True)
 
 	def getRemoteUser(self):
 		return self.conf('deploy.user', 'root')
@@ -160,7 +157,7 @@ class Server:
 
 
 	def cmd(self,cmd):
-		cmd = 'ssh -i ' + self.getPkPath() + ' -o StrictHostKeyChecking=no ' + self.getRemoteUser() + '@' + self.server + ' ' + cmd
+		cmd = 'ssh ' + self.getRemoteUser() + '@' + self.server + ' ' + cmd
 		out = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout
 		if(not out == None):
 			return out.read().strip()

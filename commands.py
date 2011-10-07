@@ -42,6 +42,7 @@ class Server:
 		if not self.usingHaProxy:
 			self.stopOld()
 		self.copyApp()
+		self.copyModules()
 		self.start()
 		if self.usingHaProxy:
 			self.swap()
@@ -101,6 +102,19 @@ class Server:
 		self.cmd('rm -fr ' + self.folder)
 		self.copyDir(self.app.path, self.folder)
 
+	def copyModules(self):
+		clientModulePath = os.path.join(self.app.path, 'modules')
+		modules = os.listdir(clientModulePath)
+		for module in modules:
+			modulePath = os.path.join(clientModulePath, module)
+			if os.path.isfile(modulePath):
+				serverModulePath = os.path.join(self.folder, 'modules', module)
+				# remove module file name on server
+				self.cmd('rm ' + serverModulePath)
+				# get real module location stored as string in file
+				moduleLocation = open(modulePath).read().strip()
+				self.copyDir(moduleLocation, serverModulePath)
+    
 	def copyDir(self, src, dest):
 		self.cmd('mkdir -p ' + dest)
 		subprocess.call('scp -qr ' + src + '/* ' + self.getRemoteUser() + '@' + self.server + ':' + dest, shell=True)

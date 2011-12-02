@@ -43,7 +43,7 @@ class Server:
 			self.stopOld()
 		self.copyApp()
 		self.copyModules()
-		self.start()
+		#self.start()
 		if self.usingHaProxy:
 			self.swap()
 
